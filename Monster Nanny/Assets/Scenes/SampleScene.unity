@@ -326,12 +326,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 329756059}
   - {fileID: 2118892395}
   - {fileID: 1906811722}
   - {fileID: 603524366}
   m_Father: {fileID: 228636952}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &49356174
 MonoBehaviour:
@@ -1254,6 +1253,7 @@ Transform:
   - {fileID: 415773036}
   - {fileID: 549995956}
   - {fileID: 341894581}
+  - {fileID: 329756059}
   - {fileID: 49356173}
   - {fileID: 1177861707}
   m_Father: {fileID: 0}
@@ -1754,15 +1754,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329756058}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 831664694}
   - {fileID: 1475481538}
   - {fileID: 684105007}
-  m_Father: {fileID: 49356173}
-  m_RootOrder: 0
+  m_Father: {fileID: 228636952}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &329756060
 MonoBehaviour:
@@ -3091,7 +3091,7 @@ Transform:
   - {fileID: 631930732}
   - {fileID: 1274657734}
   m_Father: {fileID: 49356173}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &603524367
 MonoBehaviour:
@@ -6370,7 +6370,7 @@ Transform:
   - {fileID: 767066601}
   - {fileID: 2055101254}
   m_Father: {fileID: 228636952}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1177861708
 MonoBehaviour:
@@ -11521,7 +11521,7 @@ Transform:
   - {fileID: 292292584}
   - {fileID: 670778299}
   m_Father: {fileID: 49356173}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1906811723
 MonoBehaviour:
@@ -12638,7 +12638,7 @@ Transform:
   - {fileID: 1000030304}
   - {fileID: 1957563524}
   m_Father: {fileID: 49356173}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2118892396
 MonoBehaviour:

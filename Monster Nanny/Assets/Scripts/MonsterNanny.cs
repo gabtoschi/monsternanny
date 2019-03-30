@@ -11,11 +11,24 @@ public class MonsterNanny : MonoBehaviour {
 
     public LCDScreen screen;
 
+    /* ALWAYS ON */
+    static readonly string[] objectsAlwaysOnTags = {
+        "pointslabel",
+        "misslabel",
+        "path",
+        "citybase",
+    };
+
+    static readonly string[] screensAlwaysOnTags = {
+        "monsterbases",
+    };
+
     /* PLAYER */
     const string playerTag = "player";
     const string playerBaseTag = "base";
     const string playerUpTag = "up";
     const string playerDownTag = "down";
+    
     
     private int playerPosition = 0;
     private int playerMaxPos = 5;
@@ -31,13 +44,24 @@ public class MonsterNanny : MonoBehaviour {
     void Start() {
         screen.OffAll();
 
+        StartAlwaysOn();
         UpdatePlayerLCD();
+    }
+
+    void StartAlwaysOn() {
+        foreach (string tag in objectsAlwaysOnTags) {
+            screen.OnObject(tag);
+        }
+
+        foreach (string tag in screensAlwaysOnTags) {
+            screen.OnScreen(tag);
+        }
     }
 
     void UpdatePlayerLCD() {
         screen.OffScreen(playerTag);
-        screen.OnOne(playerTag + playerPosition + playerBaseTag);
-        screen.OnOne(playerTag + playerPosition + 
+        screen.OnObject(playerTag + playerPosition + playerBaseTag);
+        screen.OnObject(playerTag + playerPosition + 
             (playerFacing == PlayerDirection.Up ? playerUpTag : playerDownTag));
     }
 

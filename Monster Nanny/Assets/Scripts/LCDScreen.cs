@@ -51,11 +51,11 @@ public class LCDScreen : MonoBehaviour {
         }
     }
 
-    public void OnOne(string lcdObject) {
+    public void OnObject(string lcdObject) {
         this.lcdObjects[lcdObject].On();
     }
 
-    public void OffOne(string lcdObject) {
+    public void OffObject(string lcdObject) {
         this.lcdObjects[lcdObject].Off();
     }
 
