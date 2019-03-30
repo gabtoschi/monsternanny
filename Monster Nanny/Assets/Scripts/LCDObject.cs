@@ -6,7 +6,7 @@ public class LCDObject : MonoBehaviour {
 
     private SpriteRenderer sprite;
 
-    void Start() {
+    void Awake() {
         this.sprite = this.gameObject.GetComponent<SpriteRenderer>();
     }
 

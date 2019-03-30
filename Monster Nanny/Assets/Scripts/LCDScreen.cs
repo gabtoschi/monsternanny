@@ -6,13 +6,14 @@ public class LCDScreen : MonoBehaviour {
 
     Dictionary<string, LCDObject> lcdObjects = new Dictionary<string, LCDObject>();
 
-    void Start() {
+    void Awake() {
         foreach (Transform child in transform) {
             this.lcdObjects.Add(child.gameObject.name, 
                 child.gameObject.GetComponent<LCDObject>());
         }
+    }
 
-        OnAll();
+    void Start() {
     }
 
     public void OnAll() {
