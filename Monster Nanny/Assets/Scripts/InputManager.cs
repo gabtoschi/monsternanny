@@ -5,6 +5,8 @@ using UnityEngine;
 public enum InputType {
     Left,
     Right,
+    Up,
+    Down,
     Action,
 }
 
@@ -19,6 +21,14 @@ public class InputManager : MonoBehaviour {
 
         if (Input.GetKeyDown("d")) {
             OnLCDInput(InputType.Right);
+        }
+
+        if (Input.GetKeyDown("w")) {
+            OnLCDInput(InputType.Up);
+        }
+
+        if (Input.GetKeyDown("s")) {
+            OnLCDInput(InputType.Down);
         }
 
         if (Input.GetKeyDown("p")) {

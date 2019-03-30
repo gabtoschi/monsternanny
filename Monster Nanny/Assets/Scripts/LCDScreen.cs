@@ -67,6 +67,10 @@ public class LCDScreen : MonoBehaviour {
         this.lcdChildScreens[lcdScreen].OffAll();
     }
 
+    public LCDScreen GetChildScreen(string lcdScreen) {
+        return this.lcdChildScreens[lcdScreen];
+    }
+
     public Dictionary<string, LCDObject> GetAllObjects() {
         return this.lcdObjects;
     }
