@@ -5,15 +5,38 @@ using UnityEngine;
 public class LCDScreen : MonoBehaviour {
 
     Dictionary<string, LCDObject> lcdObjects = new Dictionary<string, LCDObject>();
+    Dictionary<string, LCDScreen> lcdChildScreens = new Dictionary<string, LCDScreen>();
+
+    public bool isHeadScreen = false;
 
     void Awake() {
-        foreach (Transform child in transform) {
-            this.lcdObjects.Add(child.gameObject.name, 
-                child.gameObject.GetComponent<LCDObject>());
+        if (this.isHeadScreen) {
+            this.ConfigObjects();
         }
     }
 
-    void Start() {
+    public void ConfigObjects() {
+        foreach (Transform child in transform) {
+            var lcdScreen = child.gameObject.GetComponent<LCDScreen>();
+
+            if (lcdScreen) {
+                this.lcdChildScreens.Add(child.gameObject.name, lcdScreen);
+
+                if (!lcdScreen.isHeadScreen) {
+                    lcdScreen.ConfigObjects();
+                }
+
+                foreach(KeyValuePair<string, LCDObject> data in lcdScreen.GetAllObjects()) {
+                    this.lcdObjects.Add(data.Key, data.Value);
+                }
+            } else {
+                var lcdComp = child.gameObject.GetComponent<LCDObject>();
+
+                if (lcdComp) {
+                    this.lcdObjects.Add(child.gameObject.name, lcdComp);
+                }
+            }   
+        }
     }
 
     public void OnAll() {
@@ -34,5 +57,17 @@ public class LCDScreen : MonoBehaviour {
 
     public void OffOne(string lcdObject) {
         this.lcdObjects[lcdObject].Off();
+    }
+
+    public void OnScreen(string lcdScreen) {
+        this.lcdChildScreens[lcdScreen].OnAll();
+    }
+
+    public void OffScreen(string lcdScreen) {
+        this.lcdChildScreens[lcdScreen].OffAll();
+    }
+
+    public Dictionary<string, LCDObject> GetAllObjects() {
+        return this.lcdObjects;
     }
 }
