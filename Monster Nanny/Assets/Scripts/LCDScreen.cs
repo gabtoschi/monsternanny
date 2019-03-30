@@ -11,6 +11,8 @@ public class LCDScreen : MonoBehaviour {
             this.lcdObjects.Add(child.gameObject.name, 
                 child.gameObject.GetComponent<LCDObject>());
         }
+
+        OnAll();
     }
 
     public void OnAll() {

@@ -8,7 +8,6 @@ public class LCDObject : MonoBehaviour {
 
     void Start() {
         this.sprite = this.gameObject.GetComponent<SpriteRenderer>();
-        this.gameObject.SetActive(false);
     }
 
     public void On() {
