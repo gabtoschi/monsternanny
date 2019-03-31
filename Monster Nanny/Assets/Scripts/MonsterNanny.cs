@@ -77,18 +77,30 @@ public class MonsterNanny : MonoBehaviour {
     }
 
     /* MONSTERS */
-
     private string monsterTag = "monster";
     private string monsterScreenTag = "monsters";
 
     private string[] monsterOrder = {
-        "fluffy",
-        "bomby",
-        "windy",
+        "fluff",
+        "bomb",
+        "wind",
     };
+
+    private int randomMonstersCounter = 0;
+    private int randomMonstersMax = 5;
 
     void RandomizeMonsters() {
         Utils.ShuffleArray<string>(monsterOrder);
+        UpdateMonsterLCD();
+    }
+
+    void UpdateMonsterCounter() {
+        randomMonstersCounter += 1;
+
+        if (randomMonstersCounter >= randomMonstersMax){
+            RandomizeMonsters();
+            randomMonstersCounter = 0;
+        }
     }
 
     void UpdateMonsterLCD() {
@@ -99,8 +111,89 @@ public class MonsterNanny : MonoBehaviour {
         }
     }
 
+    /* ITEMS */
+    private string[] itemsSequence = new string[25];
+    private const int itemPopulateQuantity = 17;
+
+    private string itemsScreenTag = "items";
+    private string itemTag = "item";
+
+    private float updateItemsCounter = 0f;
+    private float updateItemsMax = 1f;
+
+    private int[] createItemsPositions = {0, 3, 6};
+    private char createItemsToken = '$';
+
+    void PopulateItems() {
+        for (int i = 0; i < itemsSequence.Length; i++) {
+            itemsSequence[i] = (i < itemPopulateQuantity) 
+                ? monsterOrder[Random.Range(0, monsterOrder.Length)]
+                : null;                
+        }
+    }
+
+    void UpdateItems() {
+        ShiftItems();
+        UpdateItemsLCD();
+    }
+
+    void ShiftItems() {
+        for (int i = itemsSequence.Length - 1; i > 0; i--) {
+            itemsSequence[i] = itemsSequence[i-1];
+
+            if (itemsSequence[i] != null
+                && itemsSequence[i].ToCharArray()[0] == createItemsToken
+                && itemsSequence[i].ToCharArray()[1].ToString() == i.ToString()) {
+                    CreateScheduledItem(i);
+                }
+        }
+
+        ScheduleNewItem();
+    }
+
+    void ScheduleNewItem() {
+        var scheduledPositionId = Random.Range(0, createItemsPositions.Length * 9) % createItemsPositions.Length;
+
+        if (createItemsPositions[scheduledPositionId] == 0) {
+            CreateScheduledItem(0);
+        } else {
+            itemsSequence[0] = createItemsToken.ToString();
+            itemsSequence[0] += createItemsPositions[scheduledPositionId];
+        }
+    }
+
+    void CreateScheduledItem(int itemPosition) {
+        for (int i = 0; i < createItemsPositions.Length; i++) {
+            if (createItemsPositions[i] == itemPosition) {
+                itemsSequence[itemPosition] = monsterOrder[i];
+                return;
+            }
+        }
+    }
+
+    void UpdateItemsLCD() {
+        screen.OffScreen(itemsScreenTag);
+
+        for (int i = 0; i < itemsSequence.Length; i++) {
+            if (itemsSequence[i] != null && itemsSequence[i].ToCharArray()[0] != createItemsToken) {
+                screen.OnObject(itemTag + i + itemsSequence[i]);
+            }
+        }
+    }
+
+    void UpdateItemsCounter() {
+        updateItemsCounter += Time.deltaTime;
+
+        if (updateItemsCounter >= updateItemsMax){
+            UpdateItems();
+            UpdateMonsterCounter();
+            updateItemsCounter = 0f;
+        }
+    }
+
     /* GAME LOOP */
     public LCDScreen screen;
+    public bool pause = false;
 
     void Awake() {
         InputManager.OnLCDInput += PlayerMoveLeft;
@@ -113,9 +206,20 @@ public class MonsterNanny : MonoBehaviour {
         screen.OffAll();
 
         StartAlwaysOn();
+
         UpdatePlayerLCD();
+
         RandomizeMonsters();
-        UpdateMonsterLCD();
+
+        PopulateItems();
+        UpdateItemsLCD();
+    }
+
+    void Update() {
+        if (!pause) {
+            UpdateItemsCounter();
+        }
+        
     }
    
 }

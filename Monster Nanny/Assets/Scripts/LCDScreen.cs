@@ -52,22 +52,27 @@ public class LCDScreen : MonoBehaviour {
     }
 
     public void OnObject(string lcdObject) {
-        this.lcdObjects[lcdObject].On();
+        if (this.lcdObjects.ContainsKey(lcdObject))
+            this.lcdObjects[lcdObject].On();
     }
 
     public void OffObject(string lcdObject) {
-        this.lcdObjects[lcdObject].Off();
+        if (this.lcdObjects.ContainsKey(lcdObject))
+            this.lcdObjects[lcdObject].Off();
     }
 
     public void OnScreen(string lcdScreen) {
-        this.lcdChildScreens[lcdScreen].OnAll();
+        if (this.lcdChildScreens.ContainsKey(lcdScreen))
+            this.lcdChildScreens[lcdScreen].OnAll();
     }
 
     public void OffScreen(string lcdScreen) {
-        this.lcdChildScreens[lcdScreen].OffAll();
+        if (this.lcdChildScreens.ContainsKey(lcdScreen))
+            this.lcdChildScreens[lcdScreen].OffAll();
     }
 
     public LCDScreen GetChildScreen(string lcdScreen) {
+        if (this.lcdChildScreens.ContainsKey(lcdScreen)) return null;
         return this.lcdChildScreens[lcdScreen];
     }
 

@@ -1515,7 +1515,7 @@ GameObject:
   - component: {fileID: 292292586}
   - component: {fileID: 292292585}
   m_Layer: 0
-  m_Name: monster1windy
+  m_Name: monster1wind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3210,7 +3210,7 @@ GameObject:
   - component: {fileID: 631930734}
   - component: {fileID: 631930733}
   m_Layer: 0
-  m_Name: monster2windy
+  m_Name: monster2wind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3349,7 +3349,7 @@ GameObject:
   - component: {fileID: 670778301}
   - component: {fileID: 670778300}
   m_Layer: 0
-  m_Name: monster1bomby
+  m_Name: monster1bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4733,7 +4733,7 @@ GameObject:
   - component: {fileID: 832172882}
   - component: {fileID: 832172881}
   m_Layer: 0
-  m_Name: monster2fluffy
+  m_Name: monster2fluff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5408,7 +5408,7 @@ GameObject:
   - component: {fileID: 1000030306}
   - component: {fileID: 1000030305}
   m_Layer: 0
-  m_Name: monster0windy
+  m_Name: monster0wind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5592,7 +5592,7 @@ GameObject:
   - component: {fileID: 1022956443}
   - component: {fileID: 1022956442}
   m_Layer: 0
-  m_Name: monster1fluffy
+  m_Name: monster1fluff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6052,7 +6052,7 @@ GameObject:
   - component: {fileID: 1112705674}
   - component: {fileID: 1112705673}
   m_Layer: 0
-  m_Name: monster0fluffy
+  m_Name: monster0fluff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6489,7 +6489,7 @@ GameObject:
   - component: {fileID: 1274657736}
   - component: {fileID: 1274657735}
   m_Layer: 0
-  m_Name: monster2bomby
+  m_Name: monster2bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11732,7 +11732,7 @@ GameObject:
   - component: {fileID: 1957563526}
   - component: {fileID: 1957563525}
   m_Layer: 0
-  m_Name: monster0bomby
+  m_Name: monster0bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
