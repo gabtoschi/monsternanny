@@ -34,6 +34,8 @@ public class MonsterNanny : MonoBehaviour {
 
     const string playerTag = "player";
     const string playerBaseTag = "base";
+    const string playerHalfChargedTag = "charge1";
+    const string playerFullChargedTag = "charge2";
     const string playerUpTag = "up";
     const string playerDownTag = "down";
     
@@ -41,9 +43,42 @@ public class MonsterNanny : MonoBehaviour {
     private int playerMaxPos = 5;
     private PlayerDirection playerFacing = PlayerDirection.Up;
 
+    private bool playerHalfCharged = true;
+    private bool playerFullCharged = true;
+    private float chargePlayerCounter = 0f;
+    private float chargePlayerMax = 1.75f;
+
+    private bool canDoAction = true;
+    private int[] actionPositionsUp = {14, 13, 12, 11, 10, 9};
+    private int[] actionPositionsDown = {18, 19, 20, 21, 22, 23};
+
+    void UpdatePlayerCounter() {
+        if (!playerFullCharged) {
+            chargePlayerCounter += Time.deltaTime;
+
+            if (!playerHalfCharged && chargePlayerCounter >= chargePlayerMax / 2f) {
+                playerHalfCharged = true;
+                UpdatePlayerLCD();
+            }
+
+            if (chargePlayerCounter >= chargePlayerMax){
+                playerFullCharged = true;
+                UpdatePlayerLCD();
+                chargePlayerCounter = 0f;
+            }
+        }
+    }
+
     void UpdatePlayerLCD() {
         screen.OffScreen(playerTag);
         screen.OnObject(playerTag + playerPosition + playerBaseTag);
+
+        if (playerHalfCharged)
+            screen.OnObject(playerTag + playerPosition + playerHalfChargedTag);
+
+        if (playerFullCharged)
+            screen.OnObject(playerTag + playerPosition + playerFullChargedTag);
+
         screen.OnObject(playerTag + playerPosition + 
             (playerFacing == PlayerDirection.Up ? playerUpTag : playerDownTag));
     }
@@ -73,6 +108,20 @@ public class MonsterNanny : MonoBehaviour {
         if (inp == InputType.Down && playerFacing != PlayerDirection.Down) {
             playerFacing = PlayerDirection.Down;
             UpdatePlayerLCD();
+        }
+    }
+
+    void PlayerAction(InputType inp) {
+        if (inp == InputType.Action && playerFullCharged) {
+            playerHalfCharged = false;
+            playerFullCharged = false;
+            UpdatePlayerLCD();
+
+            int pos = playerFacing == PlayerDirection.Up
+                    ? actionPositionsUp[playerPosition]
+                    : actionPositionsDown[playerPosition];
+
+            RemoveItem(pos);
         }
     }
 
@@ -171,6 +220,19 @@ public class MonsterNanny : MonoBehaviour {
         }
     }
 
+    void RemoveItem(int position) {
+        RewindItems(position);
+        UpdateItemsLCD();
+    }
+
+    void RewindItems(int position) {
+        for (int i = position; i < itemsSequence.Length - 1; i++) {
+            itemsSequence[i] = itemsSequence[i+1];
+        }
+
+        itemsSequence[itemsSequence.Length - 1] = null;
+    }
+
     void UpdateItemsLCD() {
         screen.OffScreen(itemsScreenTag);
 
@@ -200,6 +262,7 @@ public class MonsterNanny : MonoBehaviour {
         InputManager.OnLCDInput += PlayerMoveRight;
         InputManager.OnLCDInput += PlayerMoveUp;
         InputManager.OnLCDInput += PlayerMoveDown;
+        InputManager.OnLCDInput += PlayerAction;
     }
 
     void Start() {
@@ -218,8 +281,8 @@ public class MonsterNanny : MonoBehaviour {
     void Update() {
         if (!pause) {
             UpdateItemsCounter();
+            UpdatePlayerCounter();
         }
-        
     }
    
 }
