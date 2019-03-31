@@ -121,7 +121,7 @@ public class MonsterNanny : MonoBehaviour {
                     ? actionPositionsUp[playerPosition]
                     : actionPositionsDown[playerPosition];
 
-            RemoveItem(pos);
+            RemoveItem(pos, true);
         }
     }
 
@@ -168,7 +168,7 @@ public class MonsterNanny : MonoBehaviour {
     private string itemTag = "item";
 
     private float updateItemsCounter = 0f;
-    private float updateItemsMax = 1f;
+    private float updateItemsMax = 2f;
 
     private int[] createItemsPositions = {0, 3, 6};
     private char createItemsToken = '$';
@@ -220,9 +220,41 @@ public class MonsterNanny : MonoBehaviour {
         }
     }
 
-    void RemoveItem(int position) {
+    void RemoveItem(int position, bool haveCollision) {
         RewindItems(position);
         UpdateItemsLCD();
+
+        if (haveCollision && itemsSequence[position] != null) {
+            CheckCollision(position);
+        }
+    }
+
+    void CheckCollision(int pos){
+        /* FLUFFY */
+        if (itemsSequence[pos] == "fluff" && itemsSequence[pos-1] == "fluff") {
+            Debug.Log("collision fluffy");
+            RemoveItem(pos, false);
+            return;
+        }
+
+        /* BOMBY */
+        if (itemsSequence[pos] == "bomb" && itemsSequence[pos-1] == "bomb") {
+            Debug.Log("collision bomby");
+            RemoveItem(pos, false);
+            RemoveItem(pos-1, true);
+            return;
+        }
+
+        /* WINDY */
+        if (itemsSequence[pos] == "wind" && itemsSequence[pos-1] == "wind") {
+            Debug.Log("collision windy");
+            string tmp = itemsSequence[pos-1];
+            itemsSequence[pos-1] = itemsSequence[pos-2];
+            itemsSequence[pos-2] = tmp;
+
+            RemoveItem(pos, true);
+            return;
+        }
     }
 
     void RewindItems(int position) {
