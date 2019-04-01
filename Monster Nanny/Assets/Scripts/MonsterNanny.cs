@@ -335,13 +335,14 @@ public class MonsterNanny : MonoBehaviour {
         SpeedUpItems();
     }
 
-    void UpdatePointsLCD() {
+    void ResetPointsDisplay() {
         screen.Reset7Seg("pointsdisplay");
     }
 
     /* GAME LOOP */
     public LCDScreen screen;
     public bool pause = false;
+    public bool machineStarted = false;
 
     void UnpauseGame(InputType inp) {
         if (pause && inp == InputType.Action) {          
@@ -374,25 +375,35 @@ public class MonsterNanny : MonoBehaviour {
         updateItemsMax = updateItemsMaxBase;
         updateItemsSpeedUpPoints = updateItemsSpeedUpPointsBase;
 
-        UpdatePointsLCD();
+        ResetPointsDisplay();
         RetryGame();
     }
 
-    void Awake() {
-        InputManager.OnLCDInput += PlayerMoveLeft;
-        InputManager.OnLCDInput += PlayerMoveRight;
-        InputManager.OnLCDInput += PlayerMoveUp;
-        InputManager.OnLCDInput += PlayerMoveDown;
-        InputManager.OnLCDInput += PlayerAction;
-        InputManager.OnLCDInput += UnpauseGame;
+    void StartGame(InputType inp) {
+        if (inp == InputType.Action) {
+            InputManager.OnLCDInput -= StartGame;
+
+            InputManager.OnLCDInput += PlayerMoveLeft;
+            InputManager.OnLCDInput += PlayerMoveRight;
+            InputManager.OnLCDInput += PlayerMoveUp;
+            InputManager.OnLCDInput += PlayerMoveDown;
+            InputManager.OnLCDInput += PlayerAction;
+            InputManager.OnLCDInput += UnpauseGame;
+
+            machineStarted = true;
+
+            RetryMachine();
+        }
     }
 
     void Start() {
-        RetryGame();
+        InputManager.OnLCDInput += StartGame;
+        this.screen.OnAll();
+        this.screen.Update7Seg(pointsDisplayTag, 88888);
     }
 
     void Update() {
-        if (!pause) {
+        if (machineStarted && !pause) {
             UpdateItemsCounter();
             UpdatePlayerCounter();
         }
