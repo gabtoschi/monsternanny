@@ -6,6 +6,7 @@ public class LCDScreen : MonoBehaviour {
 
     Dictionary<string, LCDObject> lcdObjects = new Dictionary<string, LCDObject>();
     Dictionary<string, LCDScreen> lcdChildScreens = new Dictionary<string, LCDScreen>();
+    Dictionary<string, LCD7Seg> lcd7Segs = new Dictionary<string, LCD7Seg>();
 
     public bool isHeadScreen = false;
 
@@ -29,11 +30,22 @@ public class LCDScreen : MonoBehaviour {
                 foreach(KeyValuePair<string, LCDObject> data in lcdScreen.GetAllObjects()) {
                     this.lcdObjects.Add(data.Key, data.Value);
                 }
-            } else {
-                var lcdComp = child.gameObject.GetComponent<LCDObject>();
 
-                if (lcdComp) {
-                    this.lcdObjects.Add(child.gameObject.name, lcdComp);
+                foreach(KeyValuePair<string, LCD7Seg> data in lcdScreen.GetAll7Segs()) {
+                    this.lcd7Segs.Add(data.Key, data.Value);
+                }
+            } else {
+                var lcd7Seg = child.gameObject.GetComponent<LCD7Seg>();
+
+                if (lcd7Seg) {
+                    this.lcd7Segs.Add(child.gameObject.name, lcd7Seg);
+                    lcd7Seg.ConfigDisplay();
+                } else {
+                    var lcdComp = child.gameObject.GetComponent<LCDObject>();
+
+                    if (lcdComp) {
+                        this.lcdObjects.Add(child.gameObject.name, lcdComp);
+                    }
                 }
             }   
         }
@@ -78,5 +90,21 @@ public class LCDScreen : MonoBehaviour {
 
     public Dictionary<string, LCDObject> GetAllObjects() {
         return this.lcdObjects;
+    }
+
+    public Dictionary<string, LCD7Seg> GetAll7Segs() {
+        return this.lcd7Segs;
+    }
+
+    public void Reset7Seg(string lcd7Seg) {
+        if (this.lcd7Segs.ContainsKey(lcd7Seg)) {
+            this.lcd7Segs[lcd7Seg].ResetDisplay();
+        }
+    }
+
+    public void Update7Seg(string lcd7Seg, int value) {
+        if (this.lcd7Segs.ContainsKey(lcd7Seg)) {
+            this.lcd7Segs[lcd7Seg].UpdateValue(value);
+        }
     }
 }

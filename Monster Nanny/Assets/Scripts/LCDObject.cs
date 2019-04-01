@@ -6,6 +6,8 @@ public class LCDObject : MonoBehaviour {
 
     public static float OffAlphaSprite = 0.2f;
 
+    public bool offIsDisable = false;
+
     private SpriteRenderer sprite;
 
     private Color offColor;
@@ -20,10 +22,18 @@ public class LCDObject : MonoBehaviour {
     }
 
     public void On() {
-        this.sprite.color = this.onColor;
+        if (offIsDisable) {
+            this.gameObject.SetActive(true);
+        } else {
+            this.sprite.color = this.onColor;
+        }
     }
 
     public void Off() {
-        this.sprite.color = this.offColor;
+        if (offIsDisable) {
+            this.gameObject.SetActive(false);
+        } else {
+            this.sprite.color = this.offColor;
+        }
     }
 }

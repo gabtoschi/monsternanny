@@ -24,6 +24,8 @@ public class MonsterNanny : MonoBehaviour {
         foreach (string tag in screensAlwaysOnTags) {
             screen.OnScreen(tag);
         }
+
+        screen.Reset7Seg("pointsdisplay");
     }
 
     /* PLAYER */
@@ -48,7 +50,6 @@ public class MonsterNanny : MonoBehaviour {
     private float chargePlayerCounter = 0f;
     private float chargePlayerMax = 1.75f;
 
-    private bool canDoAction = true;
     private int[] actionPositionsUp = {14, 13, 12, 11, 10, 9};
     private int[] actionPositionsDown = {18, 19, 20, 21, 22, 23};
 
@@ -84,35 +85,35 @@ public class MonsterNanny : MonoBehaviour {
     }
 
     void PlayerMoveLeft(InputType inp) {
-        if (inp == InputType.Left && playerPosition > 0) {
+        if (!pause && inp == InputType.Left && playerPosition > 0) {
             playerPosition -= 1;
             UpdatePlayerLCD();
         }
     }
 
     void PlayerMoveRight(InputType inp) {
-        if (inp == InputType.Right && playerPosition < playerMaxPos) {
+        if (!pause && inp == InputType.Right && playerPosition < playerMaxPos) {
             playerPosition += 1;
             UpdatePlayerLCD();
         }
     }
 
     void PlayerMoveUp(InputType inp) {
-        if (inp == InputType.Up && playerFacing != PlayerDirection.Up) {
+        if (!pause && inp == InputType.Up && playerFacing != PlayerDirection.Up) {
             playerFacing = PlayerDirection.Up;
             UpdatePlayerLCD();
         }
     }
 
     void PlayerMoveDown(InputType inp) {
-        if (inp == InputType.Down && playerFacing != PlayerDirection.Down) {
+        if (!pause && inp == InputType.Down && playerFacing != PlayerDirection.Down) {
             playerFacing = PlayerDirection.Down;
             UpdatePlayerLCD();
         }
     }
 
     void PlayerAction(InputType inp) {
-        if (inp == InputType.Action && playerFullCharged) {
+        if (!pause && inp == InputType.Action && playerFullCharged) {
             playerHalfCharged = false;
             playerFullCharged = false;
             UpdatePlayerLCD();
@@ -168,7 +169,7 @@ public class MonsterNanny : MonoBehaviour {
     private string itemTag = "item";
 
     private float updateItemsCounter = 0f;
-    private float updateItemsMax = 2f;
+    private float updateItemsMax = 1.2f;
 
     private int[] createItemsPositions = {0, 3, 6};
     private char createItemsToken = '$';
@@ -182,6 +183,11 @@ public class MonsterNanny : MonoBehaviour {
     }
 
     void UpdateItems() {
+        if (itemsSequence[itemsSequence.Length - 1] != null) {
+            MissGame();
+            return;
+        }
+
         ShiftItems();
         UpdateItemsLCD();
     }
@@ -221,6 +227,7 @@ public class MonsterNanny : MonoBehaviour {
     }
 
     void RemoveItem(int position, bool haveCollision) {
+        AddPoints(this.pointPerItem);
         RewindItems(position);
         UpdateItemsLCD();
 
@@ -232,14 +239,14 @@ public class MonsterNanny : MonoBehaviour {
     void CheckCollision(int pos){
         /* FLUFFY */
         if (itemsSequence[pos] == "fluff" && itemsSequence[pos-1] == "fluff") {
-            Debug.Log("collision fluffy");
+            AddPoints(this.pointPerCollision);
             RemoveItem(pos, false);
             return;
         }
 
         /* BOMBY */
         if (itemsSequence[pos] == "bomb" && itemsSequence[pos-1] == "bomb") {
-            Debug.Log("collision bomby");
+            AddPoints(this.pointPerCollision);
             RemoveItem(pos, false);
             RemoveItem(pos-1, true);
             return;
@@ -247,7 +254,7 @@ public class MonsterNanny : MonoBehaviour {
 
         /* WINDY */
         if (itemsSequence[pos] == "wind" && itemsSequence[pos-1] == "wind") {
-            Debug.Log("collision windy");
+            AddPoints(this.pointPerCollision);
             string tmp = itemsSequence[pos-1];
             itemsSequence[pos-1] = itemsSequence[pos-2];
             itemsSequence[pos-2] = tmp;
@@ -285,19 +292,51 @@ public class MonsterNanny : MonoBehaviour {
         }
     }
 
+    /* MISS */
+    public int misses = 0;
+    public int missMax = 3;
+    private string missTag = "missicon";
+    private string citymissTag = "citymiss";
+
+    void MissGame() {
+        misses++;
+        UpdateMissLCD();
+        screen.OnObject(citymissTag);
+        pause = true;
+    }
+
+    void UpdateMissLCD() {
+        for (int i = 1; i <= missMax; i++) {
+            if (i <= misses) screen.OnObject(missTag + i);
+        }
+    }
+
+    /* POINTS */
+    private string pointsDisplayTag = "pointsdisplay";
+    private int points = 0;
+
+    private int pointPerItem = 1;
+    private int pointPerCollision = 10;
+
+    void AddPoints(int value) {
+        points += value;
+        this.screen.Update7Seg(pointsDisplayTag, points);
+    }
+
     /* GAME LOOP */
     public LCDScreen screen;
     public bool pause = false;
 
-    void Awake() {
-        InputManager.OnLCDInput += PlayerMoveLeft;
-        InputManager.OnLCDInput += PlayerMoveRight;
-        InputManager.OnLCDInput += PlayerMoveUp;
-        InputManager.OnLCDInput += PlayerMoveDown;
-        InputManager.OnLCDInput += PlayerAction;
-    }
+    void UnpauseGame(InputType inp) {
+        if (pause && inp == InputType.Action) {          
+            pause = false;
 
-    void Start() {
+            if (misses == missMax) RetryMachine();
+            else RetryGame();
+        }
+    }
+   
+    void RetryGame() {
         screen.OffAll();
 
         StartAlwaysOn();
@@ -308,6 +347,26 @@ public class MonsterNanny : MonoBehaviour {
 
         PopulateItems();
         UpdateItemsLCD();
+
+        UpdateMissLCD();
+    }
+
+    void RetryMachine() {
+        misses = 0;
+        RetryGame();
+    }
+
+    void Awake() {
+        InputManager.OnLCDInput += PlayerMoveLeft;
+        InputManager.OnLCDInput += PlayerMoveRight;
+        InputManager.OnLCDInput += PlayerMoveUp;
+        InputManager.OnLCDInput += PlayerMoveDown;
+        InputManager.OnLCDInput += PlayerAction;
+        InputManager.OnLCDInput += UnpauseGame;
+    }
+
+    void Start() {
+        RetryGame();
     }
 
     void Update() {
