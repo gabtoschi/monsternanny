@@ -24,8 +24,6 @@ public class MonsterNanny : MonoBehaviour {
         foreach (string tag in screensAlwaysOnTags) {
             screen.OnScreen(tag);
         }
-
-        screen.Reset7Seg("pointsdisplay");
     }
 
     /* PLAYER */
@@ -170,6 +168,11 @@ public class MonsterNanny : MonoBehaviour {
 
     private float updateItemsCounter = 0f;
     private float updateItemsMax = 1.2f;
+    private float updateItemsMaxBase = 1.2f;
+    
+    private float updateItemsSpeedUp = 0.8f;
+    private float updateItemsSpeedUpPoints = 300;
+    private float updateItemsSpeedUpPointsBase = 300;
 
     private int[] createItemsPositions = {0, 3, 6};
     private char createItemsToken = '$';
@@ -190,6 +193,13 @@ public class MonsterNanny : MonoBehaviour {
 
         ShiftItems();
         UpdateItemsLCD();
+    }
+
+    void SpeedUpItems() {
+        if (points > updateItemsSpeedUpPoints) {
+            updateItemsMax *= updateItemsSpeedUp;
+            updateItemsSpeedUpPoints += updateItemsSpeedUpPointsBase;
+        }
     }
 
     void ShiftItems() {
@@ -321,6 +331,12 @@ public class MonsterNanny : MonoBehaviour {
     void AddPoints(int value) {
         points += value;
         this.screen.Update7Seg(pointsDisplayTag, points);
+
+        SpeedUpItems();
+    }
+
+    void UpdatePointsLCD() {
+        screen.Reset7Seg("pointsdisplay");
     }
 
     /* GAME LOOP */
@@ -353,6 +369,12 @@ public class MonsterNanny : MonoBehaviour {
 
     void RetryMachine() {
         misses = 0;
+        points = 0;
+
+        updateItemsMax = updateItemsMaxBase;
+        updateItemsSpeedUpPoints = updateItemsSpeedUpPointsBase;
+
+        UpdatePointsLCD();
         RetryGame();
     }
 
